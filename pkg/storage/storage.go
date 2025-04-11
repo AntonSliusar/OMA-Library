@@ -115,3 +115,7 @@ func (storage *Storage) GetByModel(model string) []models.Omafile {
 	}
 	return forms
 }
+
+func (storage *Storage) GetDB() *sql.DB {
+	return storage.db
+}

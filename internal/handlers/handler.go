@@ -31,8 +31,8 @@ func RunWeb(storage *storage.Storage) {
 	e.GET("/oma/:id", dowloadHandler(storage))
 	e.POST("/register", RegisterAdmin(storage))
 	e.POST("/login", AdminLogin(storage))
-	resGroup.GET("/upload", uploadFormHandler)
-	resGroup.POST("/upload_file", uploadFileHandler(storage))
+	resGroup.GET("/upload", UploadFormHandler)
+	resGroup.POST("/upload_file", UploadFileHandler(storage))
 
 	e.Start(":8080") // add to config
 
@@ -46,7 +46,7 @@ func MainPageHandler(c echo.Context) error {
 	return nil
 }
 
-func uploadFormHandler(c echo.Context) error {
+func UploadFormHandler(c echo.Context) error {
 	if err := c.Render(http.StatusOK, "upload", nil); err != nil {
 		logger.Logger.Error(err)
 		return c.String(http.StatusInternalServerError, "Internal Server Error")
@@ -56,7 +56,7 @@ func uploadFormHandler(c echo.Context) error {
 
 // hendlers working with db:
 
-func uploadFileHandler(storage *storage.Storage) echo.HandlerFunc {
+func UploadFileHandler(storage *storage.Storage) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		fileHeader, err := c.FormFile("uploaded_file")
 		if err != nil {
