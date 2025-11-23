@@ -3,14 +3,15 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"oma-library/internal/config"
+	"oma-library/internal/models"
 
-	"github.com/AntonyCarl/OMA-Library/internal/config"
-	"github.com/AntonyCarl/OMA-Library/internal/models"
-	"github.com/AntonyCarl/OMA-Library/pkg/logger"
+	"oma-library/pkg/logger"
 )
 
 type Storage struct {
 	db *sql.DB
+
 }
 
 func NewStorage(cfg *config.Config) (*Storage, error) {
@@ -28,13 +29,16 @@ func NewStorage(cfg *config.Config) (*Storage, error) {
 		logger.Logger.Fatal(err)
 		return nil, fmt.Errorf(op)
 	}
-
+	err = db.Ping()
+	if err != nil {
+		fmt.Println(err)
+	}
 	return &Storage{db: db}, nil
 }
 
 func (storage *Storage) Create(o models.Omafile) error {
-	_, err := storage.db.Exec("INSERT INTO files (brand, model, info, directory) VALUES ($1, $2, $3, $4)",
-		o.Brand, o.Model, o.Info, o.Directory)
+	_, err := storage.db.Exec("INSERT INTO files (brand, model, r2key) VALUES ($1, $2, $3)",
+		o.Brand, o.Model, o.Key)
 
 	if err != nil {
 		logger.Logger.Error(err)
@@ -51,7 +55,7 @@ func (storage *Storage) GetById(id string) models.Omafile {
 
 	form := models.Omafile{}
 	for rows.Next() {
-		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Info, &form.Directory)
+		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Key)
 		if err != nil {
 			logger.Logger.Error(err)
 		}
@@ -69,7 +73,7 @@ func (storage *Storage) GetByBrand(brand string) []models.Omafile {
 	forms := make([]models.Omafile, 0)
 	for rows.Next() {
 		form := models.Omafile{}
-		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Info, &form.Directory)
+		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Key)
 		if err != nil {
 			logger.Logger.Error(err)
 		}
@@ -88,7 +92,7 @@ func (storage *Storage) GetByBrandAndModel(brand string, model string) []models.
 	forms := make([]models.Omafile, 0)
 	for rows.Next() {
 		form := models.Omafile{}
-		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Info, &form.Directory)
+		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Key)
 		if err != nil {
 			logger.Logger.Error(err)
 		}
@@ -107,7 +111,7 @@ func (storage *Storage) GetByModel(model string) []models.Omafile {
 	forms := make([]models.Omafile, 0)
 	for rows.Next() {
 		form := models.Omafile{}
-		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Info, &form.Directory)
+		err := rows.Scan(&form.Id, &form.Brand, &form.Model, &form.Key)
 		if err != nil {
 			logger.Logger.Error(err)
 		}

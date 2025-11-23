@@ -1,7 +1,8 @@
 package utils
 
 import (
-	"github.com/AntonyCarl/OMA-Library/pkg/logger"
+	"oma-library/pkg/logger"
+
 	"golang.org/x/crypto/bcrypt"
 )
 

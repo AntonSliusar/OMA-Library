@@ -3,9 +3,8 @@ package repository
 import (
 	"io"
 	"mime/multipart"
+	"oma-library/pkg/logger"
 	"os"
-
-	"github.com/AntonyCarl/OMA-Library/pkg/logger"
 )
 
 const path = "C:/GoLearn/FileRep/" // add to config

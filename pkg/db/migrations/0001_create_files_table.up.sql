@@ -1,6 +1,13 @@
-CREATE TABLE files (
+CREATE TABLE IF NOT EXISTS files (
     id SERIAL PRIMARY KEY,
-    brend TEXT NOT NULL,
+    brand TEXT NOT NULL,
     model TEXT NOT NULL,
-    directory TEXT NOT NULL
+    r2key TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS admins (
+    id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL
 );

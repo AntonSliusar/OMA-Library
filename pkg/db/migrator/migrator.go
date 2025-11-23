@@ -3,10 +3,13 @@ package migrator
 import (
 	"fmt"
 
-	"github.com/AntonyCarl/OMA-Library/pkg/logger"
-	"github.com/AntonyCarl/OMA-Library/pkg/storage"
-	"github.com/golang-migrate/migrate"
-	"github.com/golang-migrate/migrate/database/postgres"
+	"oma-library/pkg/logger"
+
+	"oma-library/pkg/storage"
+
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func Migrate(storage *storage.Storage) {
@@ -15,7 +18,7 @@ func Migrate(storage *storage.Storage) {
 		logger.Logger.Fatal("Не вдалося ініціалізувати драйвер PostgreSQL:", err)
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://../db/migrations",
+		"file://pkg/db/migrations",
 		"postgres", driver)
 	if err != nil {
 		logger.Logger.Fatal("Не вдалося створити мігратор:", err)

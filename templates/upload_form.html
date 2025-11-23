@@ -39,10 +39,6 @@
     <input type="text" name="Model" id="model" placeholder="Write model" class="form-control" required>
   </div>
   <div class="mb-3">
-    <label for="description" class="form-label">Description:</label>
-    <textarea name="Description" id="description" placeholder="Write description" class="form-control" rows="3"></textarea>
-  </div>
-  <div class="mb-3">
     <label for="uploaded_file" class="form-label">File:</label>
     <input type="file" name="uploaded_file" id="uploaded_file" class="form-control" required>
   </div>
@@ -50,7 +46,7 @@
 </form>
 <script>
   document.getElementById("uploadForm").onsubmit = async (event) => {
-    event.preventDefault(); // Відміна стандартного надсилання форми
+    event.preventDefault(); 
 
     let formData = new FormData(document.getElementById("uploadForm"));
     let response = await fetch("/admin/upload_file", {

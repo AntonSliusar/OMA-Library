@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"oma-library/internal/models"
+	"oma-library/internal/utils"
 	"time"
 
-	"github.com/AntonyCarl/OMA-Library/internal/models"
-	"github.com/AntonyCarl/OMA-Library/internal/utils"
-	"github.com/AntonyCarl/OMA-Library/pkg/storage"
+	"oma-library/pkg/storage"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -50,7 +52,12 @@ func AdminLogin(storage *storage.Storage) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
 		}
 		admin, err := storage.GetByEmail(signInReq.Email)
+		fmt.Println(admin.Email + admin.Username + admin.Password)
+
+		fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 		if err != nil || utils.CheckPasswordHash(signInReq.Password, admin.Password) != nil {
+			fmt.Println(err)
+			fmt.Println(utils.CheckPasswordHash(signInReq.Password, admin.Password))
 			return c.JSON(http.StatusUnauthorized, echo.Map{"message": "Invalid email or password" + err.Error()})
 		}
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

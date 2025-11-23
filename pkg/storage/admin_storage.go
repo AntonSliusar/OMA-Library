@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"github.com/AntonyCarl/OMA-Library/internal/models"
-	"github.com/AntonyCarl/OMA-Library/pkg/logger"
+	"oma-library/internal/models"
+
+	"oma-library/pkg/logger"
 )
 
 func (storage *Storage) AddAdmin(req models.SignUpRequest) error {
