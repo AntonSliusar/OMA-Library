@@ -19,7 +19,6 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     .then(response => response.json())
     .then(data => {
       if (data.token) {  // Передбачається, що сервер повертає токен у полі `token`
-        localStorage.setItem("jwt", data.token);  // Зберігаємо JWT
         window.location.reload();  // Оновлюємо сторінку, щоб відобразити кнопку "Upload"
       } else {
         console.log("Authentication failed");

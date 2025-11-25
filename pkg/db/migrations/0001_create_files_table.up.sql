@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS files (
     id SERIAL PRIMARY KEY,
     brand TEXT NOT NULL,
     model TEXT NOT NULL,
-    r2key TEXT NOT NULL
+    omakey TEXT NOT NULL,
+    imgkey TEXT
 );
 
 CREATE TABLE IF NOT EXISTS admins (

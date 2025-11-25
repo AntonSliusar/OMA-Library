@@ -4,11 +4,13 @@ import (
 	"context"
 	"io"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 
 	appCfg "oma-library/internal/config"
+	"oma-library/internal/utils"
 )
 
 type R2Client struct {
@@ -58,4 +60,19 @@ func (r2 *R2Client) DownloadFileFromR2(ctx context.Context, key string) (*s3.Get
 		return nil, err
 	}
 	return result, nil
+}
+
+func (r2 *R2Client) GeneratePresignedURLForImg(ctx context.Context, key string) (string, error) {
+	presignclient := s3.NewPresignClient(r2.client)
+	contentType := utils.GetContentTypeFromExt(key)
+	presignedURL, err := presignclient.PresignGetObject(ctx, &s3.GetObjectInput{
+		Bucket: &r2.bucket,
+		Key:    &key,
+		ResponseContentDisposition: aws.String("inline"),
+		ResponseContentType:        aws.String(contentType),
+	})
+	if err != nil {
+		return "", err
+	}
+	return presignedURL.URL, nil
 }

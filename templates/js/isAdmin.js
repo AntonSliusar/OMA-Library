@@ -1,24 +1,35 @@
-  document.addEventListener("DOMContentLoaded", function() {
-    const jwt = localStorage.getItem("jwt");
-    const navContainer = document.querySelector(".navbar-nav");
+document.addEventListener("DOMContentLoaded", async function() {
+  const navContainer = document.querySelector(".navbar-nav");
 
-    if (jwt) {
-      navContainer.innerHTML = `
-        <li class="nav-item">
-             <a class="nav-link active" aria-current="page" href="/">Search</a>
-         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/admin/upload">Upload</a>
-        </li>
-      `;
-    } else {
+  try {
+    const res = await fetch("/admin/check");
+
+    if (res.status === 200) {
+      // Token still valid → show Upload
       navContainer.innerHTML = `
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/">Search</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="login_page.html">Login</a>
+          <a class="nav-link" href="/admin/upload">Upload</a>
         </li>
       `;
+    } else {
+      throw new Error("unauthorized");
     }
-  });
+
+  } catch {
+    // Token expired → show Login
+    navContainer.innerHTML = `
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/">Search</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="login_page.html">Login</a>
+      </li>
+    `;
+
+    // cleaning, just in case
+    localStorage.removeItem("jwt");
+  }
+});

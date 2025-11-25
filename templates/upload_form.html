@@ -31,16 +31,29 @@
     <h1 class="text-center mb-4">Upload File</h1>
 <form enctype="multipart/form-data" action="/admin/upload_file" method="post" class="p-4 border rounded shadow-sm bg-light w-50 mx-auto" id="uploadForm">
   <div class="mb-3">
-    <label for="brand" class="form-label">Brand:</label>
+    <label for="brand" class="form-label text-dark">Brand:</label>
     <input type="text" name="Brand" id="brand" placeholder="Write brand name" class="form-control" required>
   </div>
   <div class="mb-3">
-    <label for="model" class="form-label">Model:</label>
+    <label for="model" class="form-label text-dark">Model:</label>
     <input type="text" name="Model" id="model" placeholder="Write model" class="form-control" required>
   </div>
   <div class="mb-3">
-    <label for="uploaded_file" class="form-label">File:</label>
+    <label for="uploaded_file" class="form-label text-dark"> OMA File:</label>
     <input type="file" name="uploaded_file" id="uploaded_file" class="form-control" required>
+  </div>
+  <!-- OPTIONAL IMAGE UPLOAD -->
+  <div class="mb-3">
+    <label for="image" class="form-label text-dark">Image (optional):</label>
+    <input type="file" name="image" id="image" accept="image/*" class="form-control">
+    
+    <small class="text-muted">You may upload an image for this OMA file. Optional.</small>
+
+    <!-- Image preview -->
+    <div id="previewContainer" style="display:none; margin-top: 10px;">
+      <p class="text-muted">Preview:</p>
+      <img id="previewImage" src="" class="img-fluid rounded" style="max-height: 200px;">
+    </div>
   </div>
   <button type="submit" class="btn btn-primary w-100">Upload</button>
 </form>

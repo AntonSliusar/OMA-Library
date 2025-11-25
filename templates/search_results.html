@@ -6,6 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <title>Document</title>
+   <style>
+        .hidden-image {
+            /* Приховуємо елемент */
+            display: none;
+            margin-top: 15px;
+            max-width: 30%;
+            height: auto;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+        }
+
+        #toggleButton {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #toggleButton:hover {
+            background-color: #2980b9;
+        }
+    </style>
+  
   
 </head>
 <body class="d-flex h-100 text-center text-bg-dark">
@@ -20,20 +47,69 @@
   <main class="px-3">
     <h1>Search results</h1>
     <button onclick="window.history.back()" class="btn btn-secondary mt-3 gap-3 mb-3 w-50 mx-auto">Back to search</button>
-    <div class="d-flex flex-column gap-3 mb-3 w-50 mx-auto">
-      {{range .}}
-      <div class="card">
+   <div class="d-flex flex-column gap-3 mb-3 w-50 mx-auto">
+    {{range .}}
+    <div class="card">
         <div class="card-body">
-          <h5 class="card-title">{{.Brand}}</h5>
-          <p class="card-text">{{.Model}}</p>
-          <a href="/oma/{{ .Id }}" class="btn btn-primary">Download</a>
+            <h5 class="card-title">{{.Brand}}</h5>
+            <p class="card-text">{{.Model}}</p>
+            
+            {{if .ImgURL}}
+                <button 
+                    class="btn btn-secondary me-2" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#img{{.Id}}" 
+                    aria-expanded="false" 
+                    aria-controls="img{{.Id}}"
+                    
+                    data-bs-toggle-text="Show map" 
+                    data-bs-initial-text="Show map"
+                >
+                    Show map
+                </button>
+            {{end}}
+
+            <a href="/oma/{{ .Id }}" class="btn btn-primary">Download</a>
+
+            {{if .ImgURL}}
+                <div class="collapse mt-3" id="img{{.Id}}">
+                    <img src="{{.ImgURL}}" class="img-fluid" alt="Image for {{.Brand}}">
+                </div>
+            {{end}}
         </div>
-      </div>
-      {{end}}
     </div>
+    {{end}}
+</div>
   </main> 
   </div> 
 <script src="/js/isAdmin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script>
+    // Цей код додасть функціональність зміни тексту для всіх кнопок Collapse
+    document.addEventListener('DOMContentLoaded', function () {
+        const collapseElements = document.querySelectorAll('.collapse');
+
+        collapseElements.forEach(collapseEl => {
+            const button = document.querySelector(`[data-bs-target="#${collapseEl.id}"]`);
+            if (!button) return;
+
+            const initialText = button.getAttribute('data-bs-initial-text') || 'Показати';
+            const toggleText = button.getAttribute('data-bs-toggle-text') || 'Приховати';
+
+            // При розгортанні (показано)
+            collapseEl.addEventListener('show.bs.collapse', function () {
+                button.textContent = toggleText;
+            });
+
+            // При згортанні (приховано)
+            collapseEl.addEventListener('hide.bs.collapse', function () {
+                button.textContent = initialText;
+            });
+        });
+    });
+</script>
 
   </body>
 <footer class="mt-auto text-white-50">

@@ -52,9 +52,7 @@ func AdminLogin(storage *storage.Storage) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
 		}
 		admin, err := storage.GetByEmail(signInReq.Email)
-		fmt.Println(admin.Email + admin.Username + admin.Password)
 
-		fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 		if err != nil || utils.CheckPasswordHash(signInReq.Password, admin.Password) != nil {
 			fmt.Println(err)
 			fmt.Println(utils.CheckPasswordHash(signInReq.Password, admin.Password))
