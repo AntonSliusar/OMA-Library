@@ -1,9 +1,9 @@
 package config
 
 import (
+	"fmt"
 	"oma-library/pkg/logger"
 
-	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -29,19 +29,17 @@ type PostgresConfig struct {
 }
 
 func SetConfig() *Config {
-	err := godotenv.Load()
-	if err != nil {
-		logger.Logger.Fatal(err)
-	}
 	var cfg Config
 
-	err = envconfig.Process("db", &cfg.DB)
+	err := envconfig.Process("db", &cfg.DB)
 	if err != nil {
+		fmt.Println(err)
 		logger.Logger.Fatal(err)
 	}
 
 	err = envconfig.Process("r2", &cfg.R2)
 	if err != nil {
+		fmt.Println(err)
 		logger.Logger.Fatal(err)
 	}
 

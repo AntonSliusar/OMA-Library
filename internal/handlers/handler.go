@@ -76,11 +76,12 @@ func UploadFileHandler(storage *storage.Storage, r2 *storage.R2Client) echo.Hand
 
 		if !strings.HasSuffix(strings.ToLower(fileHeader.Filename), ".oma") {
 			logger.Logger.Info("Not oma")
-			c.String(http.StatusBadRequest, "Invalid file format. Only .oma files are allowed")
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid file format. Only .oma files are allowed"})
+
 		}
 		omaFile := new(models.Omafile)
-		omaFile.Brand = c.FormValue("Brand")
-		omaFile.Model = c.FormValue("Model")
+		omaFile.Brand = strings.ToLower(c.FormValue("Brand"))
+		omaFile.Model = strings.ToLower(c.FormValue("Model"))
 		omaFile.OMAKey = utils.AddPrefix(fileHeader.Filename)
 		if imgHeader != nil {
 			omaFile.ImgKey = utils.AddPrefix(imgHeader.Filename)
@@ -123,8 +124,8 @@ func UploadFileHandler(storage *storage.Storage, r2 *storage.R2Client) echo.Hand
 func searchHandler(storage *storage.Storage, r2 *storage.R2Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		brand := c.QueryParam("brand")
-		model := c.QueryParam("model")
+		brand := strings.ToLower(c.QueryParam("brand"))
+		model := strings.ToLower(c.QueryParam("model"))
 		var files []models.Omafile = nil
 
 		if brand != "" && model != "" {

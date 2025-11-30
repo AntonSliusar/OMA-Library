@@ -57,24 +57,80 @@
   </div>
   <button type="submit" class="btn btn-primary w-100">Upload</button>
 </form>
+
+<!-- Toast notification container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="uploadToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header" id="toastHeader">
+      <strong class="me-auto" id="toastTitle"></strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="toastBody"></div>
+  </div>
+</div>
+
 <script>
-  document.getElementById("uploadForm").onsubmit = async (event) => {
-    event.preventDefault(); 
+  document.addEventListener('DOMContentLoaded', function() {
+    function showToast(message, isSuccess = true) {
+      const toastElement = document.getElementById("uploadToast");
+      const toastHeader = document.getElementById("toastHeader");
+      const toastBody = document.getElementById("toastBody");
+      const toastTitle = document.getElementById("toastTitle");
 
-    let formData = new FormData(document.getElementById("uploadForm"));
-    let response = await fetch("/admin/upload_file", {
-      method: "POST",
-      body: formData,
-    });
+      // Set colors based on success or error
+      if (isSuccess) {
+        toastHeader.className = "toast-header bg-success text-white";
+        toastTitle.textContent = "✓ Success";
+      } else {
+        toastHeader.className = "toast-header bg-danger text-white";
+        toastTitle.textContent = "✗ Error";
+      }
 
-    if (response.ok) {
-      let result = await response.json();
-      alert(result.message);  // Спливаюче повідомлення при успішній відповіді
-    } else {
-      alert("Failed to upload file. Please try again.");
+      toastBody.textContent = message;
+      toastElement.classList.remove("hide");
+      toastElement.classList.add("show");
+
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        toastElement.classList.remove("show");
+        toastElement.classList.add("hide");
+      }, 3000);
     }
-  };
+
+    const form = document.getElementById("uploadForm");
+    if (form) {
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault(); 
+        console.log("Form submitted"); // Debug log
+
+        let formData = new FormData(form);
+        try {
+          let response = await fetch("/admin/upload_file", {
+            method: "POST",
+            body: formData,
+          });
+
+          console.log("Response status:", response.status); // Debug log
+
+          if (response.ok) {
+            let result = await response.json();
+            showToast(result.message, true);
+            // Clear form fields after successful upload
+            form.reset();
+            document.getElementById("previewContainer").style.display = "none";
+          } else {
+            let result = await response.json();
+            showToast(result.message || "Failed to upload file. Please try again.", false);
+          }
+        } catch (error) {
+          console.error("Error:", error); // Debug log
+          showToast("Error: " + error.message, false);
+        }
+      });
+    }
+  });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9uj1KkXS550ZwvJ4qJ0YH2PdYPEKzPq8XoALQmFQqJE0xRB+Rw5lv4nE" crossorigin="anonymous"></script>
 
 
   </main>
