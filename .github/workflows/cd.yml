@@ -23,10 +23,10 @@ jobs:
 
       - name: Deploy on server
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             cd ~
             if [ ! -d "oma-library" ]; then
-              git clone -b main https://github.com/antonycarl/OMA-Library.git oma-library
+              git clone https://github.com/antonycarl/OMA-Library.git oma-library
             fi
 
             cd oma-library
