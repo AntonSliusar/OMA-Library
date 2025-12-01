@@ -1,0 +1,42 @@
+version: '3.8'
+#OmaLib service
+services:
+  omalib:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+    restart: "no"
+  # Database migration service
+  migrator:
+    image: migrate/migrate:v4.15.2
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      omapostgres:
+        condition: service_healthy
+    command: ["-path", "/migrations", "-database", "${DB_URL}", "up"]
+    restart: "no"
+
+# Postgres service
+  omapostgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: omadb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - pgdata:/var/lib/postgresql
+    restart: unless-stopped
+volumes:
+  pgdata:
