@@ -26,7 +26,7 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ~
             if [ ! -d "oma-library" ]; then
-              git clone -d main https://github.com/antonycarl/OMA-Library.git oma-library
+              git clone -b main https://github.com/antonycarl/OMA-Library.git oma-library
             fi
 
             cd oma-library
