@@ -25,11 +25,11 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
             cd ~
-            if [ ! -d "oma-library" ]; then
-              git clone https://github.com/antonycarl/OMA-Library.git oma-library
+            if [ ! -d "OMA-Library" ]; then
+              git clone https://github.com/antonycarl/OMA-Library.git
             fi
 
-            cd oma-library
+            cd OMA-Library
             git pull
 
             echo "${{ secrets.ENV_FILE }}" > .env
