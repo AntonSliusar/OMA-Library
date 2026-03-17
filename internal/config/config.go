@@ -1,8 +1,7 @@
 package config
 
 import (
-	"fmt"
-	"oma-library/pkg/logger"
+	"log/slog"
 
 	"github.com/kelseyhightower/envconfig"
 )
@@ -10,6 +9,8 @@ import (
 type Config struct {
 	DB PostgresConfig
 	R2 R2Config
+	MCP MCPConfig
+	AUTH Auth
 }
 
 type R2Config struct {
@@ -28,19 +29,36 @@ type PostgresConfig struct {
 	SSLMode  string	`envconfig:"SSLMODE"`
 }
 
+type MCPConfig struct {
+	URL string `envconfig:"URL"`
+	Port string `envconfig:"PORT"`
+}
+
+type Auth struct {
+	JWT string `envconfig:"TOKEN"`
+}
+
 func SetConfig() *Config {
 	var cfg Config
 
 	err := envconfig.Process("db", &cfg.DB)
 	if err != nil {
-		fmt.Println(err)
-		logger.Logger.Fatal(err)
+		slog.Error(err.Error())
 	}
 
 	err = envconfig.Process("r2", &cfg.R2)
 	if err != nil {
-		fmt.Println(err)
-		logger.Logger.Fatal(err)
+		slog.Error(err.Error())
+	}
+
+	err = envconfig.Process("mcp", &cfg.MCP)
+	if err != nil {
+		slog.Error(err.Error())
+	}
+
+	err = envconfig.Process("jwt", &cfg.AUTH)
+	if err != nil {
+		slog.Error(err.Error())
 	}
 
 	return &cfg

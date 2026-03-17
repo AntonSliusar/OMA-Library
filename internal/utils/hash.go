@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"oma-library/pkg/logger"
+	"log/slog"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -9,7 +9,7 @@ import (
 func HashPassword(password string) string {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		logger.Logger.Error(err)
+		slog.Error(err.Error())
 	}
 	return string(bytes)
 }

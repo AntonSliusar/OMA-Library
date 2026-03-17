@@ -3,18 +3,23 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"oma-library/internal/config"
 	"oma-library/internal/handlers"
-	"oma-library/pkg/logger"
+	"oma-library/internal/server"
+	"oma-library/internal/service"
 	"oma-library/pkg/storage"
+	"os"
 
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	logger.Init()
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+        Level: slog.LevelDebug,
+    }))
+	slog.SetDefault(logger)
 	ctx := context.Background()
-	fmt.Println("Context created")
 	cfg := config.SetConfig()
 	dbStorage, err := storage.NewStorage(cfg)
 	if err != nil {
@@ -24,6 +29,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fileService := service.NewOmaFileService(dbStorage, r2)
+	fileHandler := handlers.NewFileHandler(fileService)
+
+	userService := service.NewUserService(dbStorage)
+	userHandler := handlers.NewUserHandler(userService)
+
 	fmt.Println(dbStorage, r2)
-	handlers.RunWeb(dbStorage, r2)
+	// go handlers.RunMCP(dbStorage, r2, cfg)
+	server.RunServer(cfg, fileHandler, userHandler)
 }
+ 
